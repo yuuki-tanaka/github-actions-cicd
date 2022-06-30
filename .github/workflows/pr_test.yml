@@ -20,13 +20,15 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            let state_urls = context.payload.pull_request.statuses_url.split('/')
+            const state_urls = context.payload.pull_request.statuses_url.split('/')
+            const commit_id = state_urls[state_urls.length -1]
+            console.log(context)
             github.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
               owner: context.payload.repository.full_name.split('/')[0],
               repo: context.payload.repository.full_name.split('/')[1],
               pull_number: context.payload.pull_request.number,
               body: 'Great stuff!',
-              commit_id: state_urls[state_urls.length -1],
+              commit_id: commit_id,
               path: 'main.go',
               start_line: 10,
               start_side: 'RIGHT',
