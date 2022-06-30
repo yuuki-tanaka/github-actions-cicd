@@ -32,6 +32,8 @@ jobs:
               line: 11,
               side: 'RIGHT'
             })
+            console.log(propcess.env.CID)
+            console.log(propcess.env.REPO)
       
       # GitHub CLI api
 #       - name: Add comment to PR
