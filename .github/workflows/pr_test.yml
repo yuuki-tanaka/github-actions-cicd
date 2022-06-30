@@ -10,14 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # GitHub CLI api
-      - name: Add comment to PR
-        run: | 
-          gh api --method POST -H "Accept: application/vnd.github.v3+json" repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/pulls/${{ github.event.pull_request.number }}/comments -f body='Great stuff!' -f path='main.go' -F start_line=10 -f start_side='RIGHT' -F line=11 -f side='RIGHT'
+      - uses: actions/github-script@v6
         env:
           CID: ${{ github.sha }}
           PULL_NUMBER: ${{ github.event.pull_request.number }}
           OWNER: ${{ github.repository_owner }}
           REPO: ${{ github.event.repository.name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            console.log(context)
+      
+      # GitHub CLI api
+#       - name: Add comment to PR
+#         run: | 
+#           gh api --method POST -H "Accept: application/vnd.github.v3+json" repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/pulls/${{ github.event.pull_request.number }}/comments -f body='Great stuff!' -f path='main.go' -F start_line=10 -f start_side='RIGHT' -F line=11 -f side='RIGHT'
+#         env:
+#           CID: ${{ github.sha }}
+#           PULL_NUMBER: ${{ github.event.pull_request.number }}
+#           OWNER: ${{ github.repository_owner }}
+#           REPO: ${{ github.event.repository.name }}
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
+
