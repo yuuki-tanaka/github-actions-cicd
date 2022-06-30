@@ -20,7 +20,18 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            console.log(context.payload.pull_request.number)
+            await octokit.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
+              owner: context.payload.repository.full_name.split('/')[0],
+              repo: context.payload.repository.full_name.split('/')[1],
+              pull_number: context.payload.pull_request.number,
+              body: 'Great stuff!',
+              commit_id: '05daa4603236fad668c18915176de845aab875b0',
+              path: 'main.go',
+              start_line: 10,
+              start_side: 'RIGHT',
+              line: 11,
+              side: 'RIGHT'
+            })
       
       # GitHub CLI api
 #       - name: Add comment to PR
