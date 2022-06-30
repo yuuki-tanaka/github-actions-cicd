@@ -13,8 +13,9 @@ jobs:
       # GitHub CLI api
       - name: Add comment to PR
         run: | 
-          gh api --method POST -H "Accept: application/vnd.github.v3+json" repos/$OWNER/$REPO/issues/$PULL_NUMBER/comments -f body='Great stuff!'   
+          gh api --method POST -H "Accept: application/vnd.github.v3+json" repos/$OWNER/$REPO/pulls/$PULL_NUMBER/comments -f body='Great stuff!' -f commit_id='$CID' -f path='main.go' -F start_line=10 -f start_side='RIGHT' -F line=11 -f side='RIGHT'
         env:
+          CID: ${{ github.sha }}
           PULL_NUMBER: ${{ github.event.pull_request.number }}
           OWNER: ${{ github.repository_owner }}
           REPO: ${{ github.event.repository.name }}
