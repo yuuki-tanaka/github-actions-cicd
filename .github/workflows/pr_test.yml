@@ -4,17 +4,16 @@ name: CodeClimate_PR_Comment
 
 on:
   pull_request:
-    branches: [ "main" ]
 
 jobs:
-  build:
+  PR_Comment:
     runs-on: ubuntu-latest
 
     steps:
       # GitHub CLI api
       - name: Add comment to PR
         run: | 
-          gh api --method POST -H "Accept: application/vnd.github.v3+json" repos/$OWNER/$REPO/pulls/$PULL_NUMBER/comments -f body='Great stuff!' -f commit_id='${{ github.sha }}'   
+          gh api --method POST -H "Accept: application/vnd.github.v3+json" repos/$OWNER/$REPO/pulls/$PULL_NUMBER/comments -f body='Great stuff!' -f commit_id='${{ github.sha }}' -f path='main.go' -F line=2   
         env:
           PULL_NUMBER: ${{ github.event.pull_request.number }}
           OWNER: ${{ github.repository_owner }}
