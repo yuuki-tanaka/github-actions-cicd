@@ -24,11 +24,17 @@ jobs:
             const commit_id = state_urls[state_urls.length -1]
             const owner = context.payload.repository.full_name.split('/')[0]
             const repo = context.payload.repository.full_name.split('/')[1]
+            const pull_number = context.payload.pull_request.number
             console.log(context)
-            github.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
+            let pull_info = await github.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
               owner: owner,
               repo: repo,
-              pull_number: context.payload.pull_request.number,
+              pull_number: pull_number
+            })
+            await github.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
+              owner: owner,
+              repo: repo,
+              pull_number: pull_number,
               body: 'Great stuff!',
               commit_id: commit_id,
               path: 'main.go',
@@ -37,12 +43,7 @@ jobs:
               line: 11,
               side: 'RIGHT'
             })
-            let info = await github.rest.pulls.get({
-              owner: owner,
-              repo: repo,
-              pull_number: context.payload.pull_request.number,
-            });
-            console.log(info)
+            console.log(pull_info)
       
       # GitHub CLI api
 #       - name: Add comment to PR
