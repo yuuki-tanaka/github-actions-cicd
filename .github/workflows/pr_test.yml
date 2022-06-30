@@ -11,12 +11,12 @@ jobs:
 
     steps:
       - uses: actions/github-script@v6
-        env:
-          CID: ${{ github.sha }}
-          PULL_NUMBER: ${{ github.event.pull_request.number }}
-          OWNER: ${{ github.repository_owner }}
-          REPO: ${{ github.event.repository.name }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         env:
+#           CID: ${{ github.sha }}
+#           PULL_NUMBER: ${{ github.event.pull_request.number }}
+#           OWNER: ${{ github.repository_owner }}
+#           REPO: ${{ github.event.repository.name }}
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -37,7 +37,7 @@ jobs:
               line: 11,
               side: 'RIGHT'
             })
-            let info = github.rest.pulls.get({
+            let info = await github.rest.pulls.get({
               owner: owner,
               repo: repo,
               pull_number: context.payload.pull_request.number,
