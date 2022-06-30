@@ -6,8 +6,8 @@ func Greeting() string {
 	return "Hello"
 }
 
-func Greeting2() string {
-	return "World"
+func Greeting2(g string) string {
+	return g + "World"
 }
 
 func main() {
