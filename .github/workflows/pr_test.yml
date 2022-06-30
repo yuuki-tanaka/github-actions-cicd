@@ -20,7 +20,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            await octokit.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
+            await github.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
               owner: context.payload.repository.full_name.split('/')[0],
               repo: context.payload.repository.full_name.split('/')[1],
               pull_number: context.payload.pull_request.number,
