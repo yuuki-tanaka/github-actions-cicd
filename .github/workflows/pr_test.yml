@@ -36,7 +36,7 @@ jobs:
             const repo = context.payload.repository.full_name.split('/')[1]
             const pull_number = context.payload.pull_request.number
             const {SAMPLE} = process.env
-            console.log(`$SAMPLE`)
+            console.log(`${SAMPLE}`)
             
             let pull_info = await github.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
               owner: owner,
