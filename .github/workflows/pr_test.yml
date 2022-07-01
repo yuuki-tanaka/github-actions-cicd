@@ -20,7 +20,7 @@ jobs:
       
       - name: diff info get
         run: |
-          git diff $BASE --irreversible-delete
+          git diff $BASE --irreversible-delete --compact-summary
       
       - uses: actions/github-script@v6
         with:
