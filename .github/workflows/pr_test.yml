@@ -18,11 +18,15 @@ jobs:
           
 #       - uses: actions/checkout@v3
       
-#       - name: diff info get
-#         run: |
-#           git diff $BASE --irreversible-delete --compact-summary
+      - name: diff info get
+        run: |
+          echo "51,10,262,0,57,"(anonymous)@18-74@./dev/firebase/functions/src/index.ts","./dev/firebase/functions/src/index.ts","(anonymous)","(anonymous)",18,74" > sample.csv
+          echo SAMPLE=`cat sample.csv` >> $GITHUB_ENV
+          
       
       - uses: actions/github-script@v6
+        env:
+          SAMPLE: $SAMPLE     
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -31,6 +35,8 @@ jobs:
             const owner = context.payload.repository.full_name.split('/')[0]
             const repo = context.payload.repository.full_name.split('/')[1]
             const pull_number = context.payload.pull_request.number
+            const {SAMPLE} = process.env
+            console.log(`$SAMPLE`)
             
             let pull_info = await github.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
               owner: owner,
