@@ -21,12 +21,10 @@ jobs:
       - name: diff info get
         run: |
           echo '51,10,262,0,57,"(anonymous)@18-74@./dev/firebase/functions/src/index.ts","./dev/firebase/functions/src/index.ts","(anonymous)","(anonymous)",18,74' > sample.csv
-          echo SAMPLE=`cat sample.csv` >> $GITHUB_ENV
+          echo "SAMPLE=`cat sample.csv`" >> $GITHUB_ENV
           
       
-      - uses: actions/github-script@v6
-        env:
-          SAMPLE: $SAMPLE     
+      - uses: actions/github-script@v6    
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
