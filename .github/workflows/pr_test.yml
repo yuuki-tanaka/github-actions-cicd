@@ -30,8 +30,8 @@ jobs:
                   let dataArray = data_string[i].split(',')
                   let fileData = {};
                   fileData.complexity = dataArray[1];
-                  fileData.file = dataArray[6].replace('"', '').replace('./', '');
-                  fileData.funcName = dataArray[7].replace('"', ''); 
+                  fileData.file = dataArray[6].replace(/"/g, '').replace('./', '');
+                  fileData.funcName = dataArray[7].replace(/"/g, ''); 
                   fileData.start = dataArray[9];
                   fileData.end = dataArray[10];
                   datas.push(fileData)
