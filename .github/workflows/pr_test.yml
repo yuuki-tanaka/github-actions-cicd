@@ -59,21 +59,20 @@ jobs:
             const pull_number = context.payload.pull_request.number
             
             try {
-              csvDataArray.forEach(fileData => {
+              for (const fileData of csvDataArray) {
                 await github.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
-                  owner: owner,
-                  repo: repo,
-                  pull_number: pull_number,
-                  body: 'Great stuff!',
-                  commit_id: commit_id,
-                  path: fileData.file,
-                  start_line: fileData.start,
-                  start_side: 'RIGHT',
-                  line: fileData.end,
-                  side: 'RIGHT'
+                    owner: owner,
+                    repo: repo,
+                    pull_number: pull_number,
+                    body: 'Great stuff!',
+                    commit_id: commit_id,
+                    path: fileData.file,
+                    start_line: fileData.start,
+                    start_side: 'RIGHT',
+                    line: fileData.end,
+                    side: 'RIGHT'
                 })
-              })
-              
+              } 
             } catch (error) {console.log(error)}
             
           
