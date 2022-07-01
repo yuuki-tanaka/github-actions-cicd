@@ -60,11 +60,14 @@ jobs:
             
             try {
               for (const fileData of csvDataArray) {
+                
+                if (fileData.complexity < 10) continue;
+                
                 await github.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
                     owner: owner,
                     repo: repo,
                     pull_number: pull_number,
-                    body: 'Great stuff!',
+                    body: 'Method ' + fileData.funcName + ' has a Cognitive Complexity of' + fileData.complexity,
                     commit_id: commit_id,
                     path: fileData.file,
                     start_line: fileData.start,
