@@ -14,7 +14,7 @@ jobs:
       - name: get csv data
         run: |
           echo '51,10,262,0,57,"(anonymous)@18-74@./dev/firebase/functions/src/index.ts","./dev/firebase/functions/src/index.ts","(anonymous)","(anonymous)",18,74' > sample.csv
-          echo "SAMPLE=`cat sample.csv`" >> $GITHUB_ENV
+          echo "CSVDATA=`cat sample.csv`" >> $GITHUB_ENV
           
       
       - uses: actions/github-script@v6    
@@ -30,8 +30,8 @@ jobs:
                   let dataArray = data_string[i].split(',')
                   let fileData = {};
                   fileData.complexity = dataArray[1];
-                  fileData.file = dataArray[6];
-                  fileData.funcName = dataArray[7]; 
+                  fileData.file = dataArray[6].replace('"', '').replace('./', '');
+                  fileData.funcName = dataArray[7].replace('"', ''); 
                   fileData.start = dataArray[9];
                   fileData.end = dataArray[10];
                   datas.push(fileData)
