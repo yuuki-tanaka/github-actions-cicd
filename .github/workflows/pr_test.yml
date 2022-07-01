@@ -10,6 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.base_ref }}
+      
+      - run: echo BASE=`git rev-parse HEAD` >> $GITHUB_ENV
+          
+      - uses: actions/checkout@v3
+      
+      - name: diff info get
+        run: |
+          git diff $BASE --numstat
+      
       - uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
