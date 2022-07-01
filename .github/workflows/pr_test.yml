@@ -11,12 +11,6 @@ jobs:
 
     steps:
       - uses: actions/github-script@v6
-#         env:
-#           CID: ${{ github.sha }}
-#           PULL_NUMBER: ${{ github.event.pull_request.number }}
-#           OWNER: ${{ github.repository_owner }}
-#           REPO: ${{ github.event.repository.name }}
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -25,12 +19,15 @@ jobs:
             const owner = context.payload.repository.full_name.split('/')[0]
             const repo = context.payload.repository.full_name.split('/')[1]
             const pull_number = context.payload.pull_request.number
+            
             let pull_info = await github.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
               owner: owner,
               repo: repo,
               pull_number: pull_number
             })
+            
             let file = pull_info.data[0].filename
+            
             await github.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
               owner: owner,
               repo: repo,
@@ -38,9 +35,9 @@ jobs:
               body: 'Great stuff!',
               commit_id: commit_id,
               path: file,
-              start_line: 1,
+              start_line: 10,
               start_side: 'RIGHT',
-              line: 2,
+              line: 10,
               side: 'RIGHT'
             })
             console.log(pull_info)
