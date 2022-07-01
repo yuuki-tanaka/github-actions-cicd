@@ -37,7 +37,7 @@ jobs:
               path: file,
               start_line: 10,
               start_side: 'RIGHT',
-              line: 10,
+              line: 11,
               side: 'RIGHT'
             })
             console.log(pull_info)
