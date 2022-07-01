@@ -43,7 +43,7 @@ jobs:
               fi
             done
           EOF
-          git diff $BASE --irreversible-delete --no-pager --no-ext-diff -U1000000 | sh ./diffLine.sh | grep -E "^[^\"].*\:[0-9]+\:[\+|\-]"
+          git --no-pager diff $BASE --irreversible-delete --no-ext-diff -U1000000 | sh ./diffLine.sh | grep -E "^[^\"].*\:[0-9]+\:[\+|\-]" | | ruby -nle 'print $_.split(":").slice(0..1).join(" ")' | uniq
       
       - uses: actions/github-script@v6
         with:
