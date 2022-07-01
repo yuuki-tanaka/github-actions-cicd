@@ -36,6 +36,24 @@ jobs:
             const {SAMPLE} = process.env
             console.log(`${SAMPLE}`)
             
+            function makeData(csv_data){
+                let datas = [];
+                const data_string = csv_data.split('\n');
+                for (let i = 0; i < data_string.length; i++) {
+                  let fileData = {};
+                  fileData.complexity = data_string[i].split(',')[1];
+                  fileData.file = data_string[i].split(',')[6];
+                  fileData.funcName = data_string[i].split(',')[7];
+                  fileData.start = data_string[i].split(',')[9];
+                  fileData.end = data_string[i].split(',')[10];
+                  datas.push(fileData)
+                }
+              return datas;
+            }
+            
+            let csvDatArray = makeData(`${SAMPLE}`)
+            console.log(csvDatArray)
+            
             let pull_info = await github.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
               owner: owner,
               repo: repo,
