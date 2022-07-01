@@ -10,17 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.base_ref }}
+#       - uses: actions/checkout@v3
+#         with:
+#           ref: ${{ github.base_ref }}
       
-      - run: echo BASE=`git rev-parse HEAD` >> $GITHUB_ENV
+#       - run: echo BASE=`git rev-parse HEAD` >> $GITHUB_ENV
           
-      - uses: actions/checkout@v3
+#       - uses: actions/checkout@v3
       
-      - name: diff info get
-        run: |
-          git diff $BASE --irreversible-delete --compact-summary
+#       - name: diff info get
+#         run: |
+#           git diff $BASE --irreversible-delete --compact-summary
       
       - uses: actions/github-script@v6
         with:
@@ -40,18 +40,22 @@ jobs:
             
             let file = pull_info.data[0].filename
             
-            await github.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
-              owner: owner,
-              repo: repo,
-              pull_number: pull_number,
-              body: 'Great stuff!',
-              commit_id: commit_id,
-              path: file,
-              start_line: 10,
-              start_side: 'RIGHT',
-              line: 11,
-              side: 'RIGHT'
-            })
+            try {
+              await github.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
+                owner: owner,
+                repo: repo,
+                pull_number: pull_number,
+                body: 'Great stuff!',
+                commit_id: commit_id,
+                path: file,
+                start_line: 1,
+                start_side: 'RIGHT',
+                line: 2,
+                side: 'RIGHT'
+              })
+            } catch (error) {
+              console.log(error)
+            }
             console.log(pull_info)
           
 
