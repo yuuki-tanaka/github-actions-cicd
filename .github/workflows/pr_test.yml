@@ -51,16 +51,14 @@ jobs:
 
             let isEditFile = fileName => {
               for (const fileData of pull_info.data) {
-                console.log(fileData)
+                console.log(fileData.filename)
                 console.log(fileName)
                 if (fileData.filename === fileName) return true
               }
               return false
             }
             
-            let csvDataArray = makeData(`${CSVDATA}`)
-            console.log(csvDataArray)
-            
+            let csvDataArray = makeData(`${CSVDATA}`)            
             try {
               for (const fileData of csvDataArray) {
                 
