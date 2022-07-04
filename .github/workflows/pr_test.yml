@@ -21,67 +21,42 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            
-            let readCSV = csv_data => {
-              const separator = ','
-              const columnSize = 11
-              
-              let chars = Array.from(csv_data)
-              console.log(chars)
-              let list = []
-              let queteOpenFlg = false
-              let buf = ""
-              let csvList = []
-              for (var i = 0; i < chars.length; i++) {
-                if (chars[i] == '"') {
-                  queteOpenFlg = queteOpenFlg == false
-                } else {
-                  if ((chars[i] == separator || chars[i] == '\n') && !queteOpenFlg) {
-                    list.push(buf)
-                    buf = ""
-                    if (list.length == columnSize) {
-                      console.log(list)
-                      csvList.push(list)
-                      list = [];
-                    }
-                  } else {
-                    buf += chars[i];
-                  }
-                }
-              }
-              return csvList
-            }
+            const {CSVDATA} = process.env
             
             let makeData = csv_data => {
-              console.log(csv_data)
-              let datas = [];
-              const data_string = readCSV(csv_data)
-              for (let i = 0; i < data_string.length; i++) {
-                let dataArray = data_string[i].split(',')
-                let fileData = {};
-                fileData.complexity = dataArray[1];
-                fileData.file = dataArray[6].replace(/"/g, '').replace('./', '');
-                fileData.funcName = dataArray[7].replace(/"/g, ''); 
-                fileData.start = dataArray[9];
-                fileData.end = dataArray[10];
-                datas.push(fileData)
-              }
+                let datas = [];
+                const data_string = csv_data.split('\n');
+                for (let i = 0; i < data_string.length; i++) {
+                  let dataArray = data_string[i].split(',')
+                  let fileData = {};
+                  fileData.complexity = dataArray[1];
+                  fileData.file = dataArray[6].replace(/"/g, '').replace('./', '');
+                  fileData.funcName = dataArray[7].replace(/"/g, ''); 
+                  fileData.start = dataArray[9];
+                  fileData.end = dataArray[10];
+                  datas.push(fileData)
+                }
               return datas;
             }
 
-            const {CSVDATA} = process.env
-            let csvDataArray = makeData(`${CSVDATA}`)
-            console.log(csvDataArray)
-            
-            /* 
             let pull_info = await github.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
               owner: owner,
               repo: repo,
               pull_number: pull_number
             })
+            let fileList = pull_info.data
+
+            let isEditFile = fileName => {
+              for (const fileData of fileList) {
+                console.log(fileData)
+                console.log(fileName)
+                if (fileData.filename === fileName) return true
+              }
+              return false
+            }
             
-            let file = pull_info.data[0].filename
-            */
+            let csvDataArray = makeData(`${CSVDATA}`)
+            console.log(csvDataArray)
             
             const state_urls = context.payload.pull_request.statuses_url.split('/')
             const commit_id = state_urls[state_urls.length -1]
@@ -92,7 +67,9 @@ jobs:
             try {
               for (const fileData of csvDataArray) {
                 
-                if (fileData.complexity < 10) continue;
+                if (fileData.complexity < 10) continue
+
+                if(!isEditFile(fileData.file)) continue
                 
                 await github.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
                     owner: owner,
