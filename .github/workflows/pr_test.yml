@@ -22,6 +22,16 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const {CSVDATA} = process.env
+            const state_urls = context.payload.pull_request.statuses_url.split('/')
+            const commit_id = state_urls[state_urls.length -1]
+            const owner = context.payload.repository.full_name.split('/')[0]
+            const repo = context.payload.repository.full_name.split('/')[1]
+            const pull_number = context.payload.pull_request.number
+            const pull_info = await github.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
+              owner: owner,
+              repo: repo,
+              pull_number: pull_number
+            })
             
             let makeData = csv_data => {
                 let datas = [];
@@ -39,15 +49,8 @@ jobs:
               return datas;
             }
 
-            let pull_info = await github.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
-              owner: owner,
-              repo: repo,
-              pull_number: pull_number
-            })
-            let fileList = pull_info.data
-
             let isEditFile = fileName => {
-              for (const fileData of fileList) {
+              for (const fileData of pull_info.data) {
                 console.log(fileData)
                 console.log(fileName)
                 if (fileData.filename === fileName) return true
@@ -57,12 +60,6 @@ jobs:
             
             let csvDataArray = makeData(`${CSVDATA}`)
             console.log(csvDataArray)
-            
-            const state_urls = context.payload.pull_request.statuses_url.split('/')
-            const commit_id = state_urls[state_urls.length -1]
-            const owner = context.payload.repository.full_name.split('/')[0]
-            const repo = context.payload.repository.full_name.split('/')[1]
-            const pull_number = context.payload.pull_request.number
             
             try {
               for (const fileData of csvDataArray) {
