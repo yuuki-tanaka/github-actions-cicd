@@ -21,24 +21,54 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const {CSVDATA} = process.env
             
-            let makeData = csv_data => {
-                let datas = [];
-                const data_string = csv_data.split('\n');
-                for (let i = 0; i < data_string.length; i++) {
-                  let dataArray = data_string[i].split(',')
-                  let fileData = {};
-                  fileData.complexity = dataArray[1];
-                  fileData.file = dataArray[6].replace(/"/g, '').replace('./', '');
-                  fileData.funcName = dataArray[7].replace(/"/g, ''); 
-                  fileData.start = dataArray[9];
-                  fileData.end = dataArray[10];
-                  datas.push(fileData)
+            let readCSV = csv_data => {
+              csv_data.replace(/,/g, '\t')
+              const separator = '\t'
+              const column = 11
+              
+              let chars = Array.from(csv_data)
+              let list = []
+              let queteOpenFlg = false
+              let buf = ""
+              let csvList = []
+              for (var i = 0; i < chars.length; i++) {
+                if (chars[i] == '"') {
+                  queteOpenFlg = queteOpenFlg == false
+                  continue
                 }
-              return datas;
+                if ((chars[i] == separator || chars[i] == '\n') && !queteOpenFlg) {
+                  list.push(buf)
+                  buf = ""
+                  if (list.length == columnSize) {
+                    console.log(list)
+                    csvList.push(list)
+                    list = [];
+                  }
+                } else {
+                  buf += chars[i];
+                }
+              }
+              return csvList
             }
             
+            let makeData = csv_data => {
+              let datas = [];
+              const data_string = readCSV(csv_data)
+              for (let i = 0; i < data_string.length; i++) {
+                let dataArray = data_string[i].split('\t')
+                let fileData = {};
+                fileData.complexity = dataArray[1];
+                fileData.file = dataArray[6].replace(/"/g, '').replace('./', '');
+                fileData.funcName = dataArray[7].replace(/"/g, ''); 
+                fileData.start = dataArray[9];
+                fileData.end = dataArray[10];
+                datas.push(fileData)
+              }
+              return datas;
+            }
+
+            const {CSVDATA} = process.env
             let csvDataArray = makeData(`${CSVDATA}`)
             console.log(csvDataArray)
             
