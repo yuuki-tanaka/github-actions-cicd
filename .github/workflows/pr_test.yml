@@ -23,7 +23,7 @@ jobs:
           script: |
             const {CSVDATA} = process.env
             
-            function makeData(csv_data){
+            let makeData = csv_data => {
                 let datas = [];
                 const data_string = csv_data.split('\n');
                 for (let i = 0; i < data_string.length; i++) {
