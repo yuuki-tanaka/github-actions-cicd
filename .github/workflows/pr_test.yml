@@ -23,8 +23,7 @@ jobs:
           script: |
             
             let readCSV = csv_data => {
-              csv_data.replace(/,/g, '\t')
-              const separator = '\t'
+              const separator = ','
               const column = 11
               
               let chars = Array.from(csv_data)
@@ -53,10 +52,11 @@ jobs:
             }
             
             let makeData = csv_data => {
+              console.log(csv_data)
               let datas = [];
               const data_string = readCSV(csv_data)
               for (let i = 0; i < data_string.length; i++) {
-                let dataArray = data_string[i].split('\t')
+                let dataArray = data_string[i].split(',')
                 let fileData = {};
                 fileData.complexity = dataArray[1];
                 fileData.file = dataArray[6].replace(/"/g, '').replace('./', '');
