@@ -32,19 +32,9 @@ jobs:
             })
 
             let makeData = records => {
-              let datas = [];
-                /*const data_string = csv_data.split('\n');
-                for (let i = 0; i < data_string.length; i++) {
-                  let dataArray = data_string[i].split(',')
-                  let fileData = {};
-                  fileData.complexity = dataArray[1];
-                  fileData.file = dataArray[6].replace(/"/g, '').replace('./', '');
-                  fileData.funcName = dataArray[7].replace(/"/g, ''); 
-                  fileData.start = dataArray[9];
-                  fileData.end = dataArray[10];
-                  datas.push(fileData)
-                }*/
+              let datas = []
               for (const record of records) {
+                console.log(record)
                 let fileData = {}
                 fileData.complexity = record[1]
                 fileData.file = record[6]
@@ -64,10 +54,9 @@ jobs:
             }
 
             const data = fs.readFileSync('sample.csv')
-            console.log(data)
             const records = parse(data)
-            console.log(records)
             let csvDataArray = makeData(records)
+            console.log(csvDataArray)
 
             try {
               for (const fileData of csvDataArray) {
