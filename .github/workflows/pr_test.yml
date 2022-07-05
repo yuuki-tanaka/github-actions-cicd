@@ -32,7 +32,7 @@ jobs:
             })
             let editFileList = []
             pull_info.data.forEach(fileData => editFileList.push(fileData.filename))
-            console.log(pull_info.data[0].patch.match(/^@@.*@@/)[0].split('+')[1].replace(' ', '').replace(/@/, ''))
+            console.log(pull_info.data[0].patch.match(/^@@.*@@/)[0].split('+')[1].trim().replace(/@/g, ''))
 
             let getMessage = (funcName, complexity) => {
               return (`Method  '${funcName}'  has a  Cyclomatic Complexity of ${complexity} :bulb:`)
