@@ -32,6 +32,7 @@ jobs:
             })
             let editFileList = []
             pull_info.data.forEach(fileData => editFileList.push(fileData.filename))
+            console.log(pull_info.data[0])
 
             let getMessage = (funcName, complexity) => {
               return (`Method  '${funcName}'  has a  Cyclomatic Complexity of ${complexity} :bulb:`)
