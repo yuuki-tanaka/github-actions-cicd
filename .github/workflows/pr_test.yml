@@ -7,7 +7,7 @@ on:
 
 jobs:
   PR_Comment:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - name: get csv data
         run: |
@@ -64,7 +64,9 @@ jobs:
             }
 
             const data = fs.readFileSync('sample.csv')
+            console.log(data)
             const records = parse(data)
+            console.log(records)
             let csvDataArray = makeData(records)
 
             try {
