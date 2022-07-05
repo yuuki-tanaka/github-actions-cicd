@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: get csv data
         run: |
-          echo '51,10,262,0,57,"(anonymous)@18-74@./dev/firebase/functions/src/index.ts","./dev/firebase/functions/src/index.ts","(anonymous)","(anonymous)",18,74' > sample.csv
+          echo '51,11,262,0,57,"(anonymous)@18-74@./dev/firebase/functions/src/index.ts","main.go","(anonymous)","(anonymous)",6,10' > sample.csv
       
       - run: npm install csv-parse
       - uses: actions/github-script@v6    
