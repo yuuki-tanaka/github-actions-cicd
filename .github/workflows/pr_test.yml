@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: get csv data
         run: |
-          echo '51,11,262,0,57,"Greeting2@18-74@./dev/firebase/functions/src/index.ts","main.go","Greeting2","Greeting2",6,10' > sample.csv
+          echo '51,11,262,0,57,"Greeting2@18-74@main.go","main.go","Greeting2","Greeting2",6,10' > sample.csv
       
       - run: npm install csv-parse
       - uses: actions/github-script@v6    
@@ -34,8 +34,7 @@ jobs:
             pull_info.data.forEach(fileData => editFileList.push(fileData.filename))
 
             let getMessage = (funcName, complexity) => {
-              return (`Method  '${funcName}'  has a  Cyclomatic Complexity of ${complexity}
-              メンテナンスやテストが難しい可能性があるので修正をオススメします:bulb:`)
+              return (`Method  '${funcName}'  has a  Cyclomatic Complexity of ${complexity} :bulb:`)
             }
 
             let makeData = records => {
