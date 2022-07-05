@@ -33,6 +33,11 @@ jobs:
             let editFileList = []
             pull_info.data.forEach(fileData => editFileList.push(fileData.filename))
 
+            let getMessage = (funcName, complexity) => {
+              return (`Method ${funcName} has a  Cyclomatic Complexity of ${complexity}
+              メンテナンスやテストが難しい可能性があるので修正をオススメします:bulb:`)
+            }
+
             let makeData = records => {
               let datas = []
               for (const record of records) {
@@ -55,12 +60,11 @@ jobs:
 
                 if(!editFileList.includes(fileData.file)) continue
                 
-                let message = 'Method ' + fileData.funcName + ' has a  Cyclomatic Complexity of ' + fileData.complexity + '\nメンテナンスやテストが難しい可能性があるので修正をオススメします:bulb:'
                 await github.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
                     owner: owner,
                     repo: repo,
                     pull_number: pull_number,
-                    body: message,
+                    body: getMessage(fileData.funcName, fileData.complexity),
                     commit_id: commit_id,
                     path: fileData.file,
                     start_line: fileData.start,
