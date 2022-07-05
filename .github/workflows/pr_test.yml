@@ -34,7 +34,7 @@ jobs:
             pull_info.data.forEach(fileData => editFileList.push(fileData.filename))
 
             let getMessage = (funcName, complexity) => {
-              return (`Method ${funcName} has a  Cyclomatic Complexity of ${complexity}
+              return (`Method  '${funcName}'  has a  Cyclomatic Complexity of ${complexity}
               メンテナンスやテストが難しい可能性があるので修正をオススメします:bulb:`)
             }
 
