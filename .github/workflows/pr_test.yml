@@ -8,82 +8,80 @@ on:
 jobs:
   PR_Comment:
     runs-on: ubuntu-latest
-
     steps:
-    
       - name: get csv data
         run: |
           echo '51,10,262,0,57,"(anonymous)@18-74@./dev/firebase/functions/src/index.ts","./dev/firebase/functions/src/index.ts","(anonymous)","(anonymous)",18,74' > sample.csv
       
       - run: npm install csv-parse
       - uses: actions/github-script@v6    
-      with:
-        github-token: ${{secrets.GITHUB_TOKEN}}
-        script: |
-          const fs = require('fs')
-          const {parse} = require('csv-parse/sync')
-          const state_urls = context.payload.pull_request.statuses_url.split('/')
-          const commit_id = state_urls[state_urls.length -1]
-          const owner = context.payload.repository.full_name.split('/')[0]
-          const repo = context.payload.repository.full_name.split('/')[1]
-          const pull_number = context.payload.pull_request.number
-          const pull_info = await github.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
-            owner: owner,
-            repo: repo,
-            pull_number: pull_number
-          })
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const fs = require('fs')
+            const {parse} = require('csv-parse/sync')
+            const state_urls = context.payload.pull_request.statuses_url.split('/')
+            const commit_id = state_urls[state_urls.length -1]
+            const owner = context.payload.repository.full_name.split('/')[0]
+            const repo = context.payload.repository.full_name.split('/')[1]
+            const pull_number = context.payload.pull_request.number
+            const pull_info = await github.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
+              owner: owner,
+              repo: repo,
+              pull_number: pull_number
+            })
 
-          let makeData = records => {
-            let datas = [];
-              /*const data_string = csv_data.split('\n');
-              for (let i = 0; i < data_string.length; i++) {
-                let dataArray = data_string[i].split(',')
-                let fileData = {};
-                fileData.complexity = dataArray[1];
-                fileData.file = dataArray[6].replace(/"/g, '').replace('./', '');
-                fileData.funcName = dataArray[7].replace(/"/g, ''); 
-                fileData.start = dataArray[9];
-                fileData.end = dataArray[10];
+            let makeData = records => {
+              let datas = [];
+                /*const data_string = csv_data.split('\n');
+                for (let i = 0; i < data_string.length; i++) {
+                  let dataArray = data_string[i].split(',')
+                  let fileData = {};
+                  fileData.complexity = dataArray[1];
+                  fileData.file = dataArray[6].replace(/"/g, '').replace('./', '');
+                  fileData.funcName = dataArray[7].replace(/"/g, ''); 
+                  fileData.start = dataArray[9];
+                  fileData.end = dataArray[10];
+                  datas.push(fileData)
+                }*/
+              for (const record of records) {
+                let fileData = {}
+                fileData.complexity = record[1]
+                fileData.file = record[6]
+                fileData.funcName = record[7]
+                fileData.start = record[9]
+                fileData.end = record[10]
                 datas.push(fileData)
-              }*/
-            for (const record of records) {
-              let fileData = {}
-              fileData.complexity = record[1]
-              fileData.file = record[6]
-              fileData.funcName = record[7]
-              fileData.start = record[9]
-              fileData.end = record[10]
-              datas.push(fileData)
-            }  
-            return datas;
-          }
-          
-          let isEditFile = fileName => {
-            for (const fileData of pull_info.data) {
-              if (fileData.filename === fileName) return true
+              }  
+              return datas;
             }
-            return false
-          }
 
-          const data = fs.readFileSync('sample.csv')
-          const records = parse(data)
-          let csvDataArray = makeData(records)
+            let isEditFile = fileName => {
+              for (const fileData of pull_info.data) {
+                if (fileData.filename === fileName) return true
+              }
+              return false
+            }
 
-          try {
-            for (const fileData of csvDataArray) {
-              if (fileData.complexity < 10) continue
-              if(!isEditFile(fileData.file)) continue
-              await github.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
-                  owner: owner,
-                  repo: repo,
-                  pull_number: pull_number,
-                  body: 'Method ' + fileData.funcName + ' has a  Cyclomatic Complexity of' + fileData.complexity,
-                  commit_id: commit_id,
-                  path: fileData.file,
-                  start_line: fileData.start,
-                  start_side: 'RIGHT',
-                  line: fileData.end,
-                  side: 'RIGHT'
-              })
-            } 
-          } catch (error) {console.log(error)}
+            const data = fs.readFileSync('sample.csv')
+            const records = parse(data)
+            let csvDataArray = makeData(records)
+
+            try {
+              for (const fileData of csvDataArray) {
+                if (fileData.complexity < 10) continue
+                if(!isEditFile(fileData.file)) continue
+                await github.request('POST /repos/{owner}/{repo}/pulls/{pull_number}/comments', {
+                    owner: owner,
+                    repo: repo,
+                    pull_number: pull_number,
+                    body: 'Method ' + fileData.funcName + ' has a  Cyclomatic Complexity of' + fileData.complexity,
+                    commit_id: commit_id,
+                    path: fileData.file,
+                    start_line: fileData.start,
+                    start_side: 'RIGHT',
+                    line: fileData.end,
+                    side: 'RIGHT'
+                })
+              } 
+            } catch (error) {console.log(error)}
