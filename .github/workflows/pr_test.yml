@@ -39,8 +39,8 @@ jobs:
                 fileData.complexity = record[1]
                 fileData.file = record[6]
                 fileData.funcName = record[7]
-                fileData.start = record[9]
-                fileData.end = record[10]
+                fileData.start = Number(record[9])
+                fileData.end = Number(record[10])
                 datas.push(fileData)
               }  
               return datas;
